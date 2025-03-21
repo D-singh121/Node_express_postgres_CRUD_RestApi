@@ -95,8 +95,10 @@ const loginUser = asyncHandler(async (req, res, next) => {
     });
 
     // Store JWT token in HTTP-only cookie
-    res.status(200).cookie("token", token, {
-        httpOnly: true
+    res
+      .status(200)
+      .cookie("token", token, {
+        httpOnly: true,
       })
       .json({
         message: `Welcome back ${user.name}`,
@@ -159,11 +161,16 @@ const getUserById = asyncHandler(async (req, res, next) => {
 
 const updateUserById = asyncHandler(async (req, res, next) => {
   try {
-    const { id } = req.params;
+    const id = Number(req.params.id); // by default params are strings
     const { name, email } = req.body;
 
     if (!name || !email || name.trim() === "" || email.trim() === "") {
       return handleResponse(res, 400, "Name and Email are required.");
+    }
+
+    // Validate if 'id' exists and is a number
+    if (!id || isNaN(id)) {
+      return handleResponse(res, 400, "Invalid user ID.");
     }
 
     // Update user in the database
@@ -174,6 +181,7 @@ const updateUserById = asyncHandler(async (req, res, next) => {
 
     handleResponse(res, 200, "User updated successfully", updatedUser);
   } catch (error) {
+    console.error("Update user error:", error); // ✅ Log the actual error
     next(error); // Passing error to global error handler
   }
 });
