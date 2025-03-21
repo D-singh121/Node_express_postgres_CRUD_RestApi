@@ -95,16 +95,17 @@ const loginUser = asyncHandler(async (req, res, next) => {
     });
 
     // Store JWT token in HTTP-only cookie
-    res.cookie("token", token, {
-      httpOnly: true, // Prevents XSS attacks
-      secure: process.env.NODE_ENV === "production", // Secure in production
-      sameSite: "Strict", // CSRF protection
-      maxAge: 2 * 24 * 60 * 60 * 1000, // 2 days
-    });
+    res.status(200).cookie("token", token, {
+        httpOnly: true
+      })
+      .json({
+        message: `Welcome back ${user.name}`,
+        success: true,
+      });
 
-    //Send response (excluding password)
-    const { password: _, ...userData } = user;
-    handleResponse(res, 200, "Login successful", userData);
+    // //Send response (excluding password)
+    // const { password: _, ...userData } = user;
+    // handleResponse(res, 200, "Login successful", userData);
   } catch (error) {
     next(error); // Passing error to error-handling middleware
   }
@@ -114,15 +115,15 @@ const logOutUser = asyncHandler(async (req, res, next) => {
   try {
     // check if token exists
     const token = req.cookies?.token;
+    console.log(token);
+
     if (!token) {
       return handleResponse(res, 400, "Already logged out.");
     }
 
-    res.cookie("token", "", {
+    res.clearCookie("token", {
       httpOnly: true,
-      secure: process.env.NODE_ENV === "production",
-      sameSite: "Strict",
-      expires: new Date(0),
+      path: "/", // Ensure it clears for the entire site
     });
 
     handleResponse(res, 200, "Logout successful");

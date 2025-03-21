@@ -9,6 +9,8 @@ import {
   updateUserById,
 } from "../controllers/userController.js";
 
+// import isAuthenticated from "../middlewares/isAuthenticated.js";
+
 const router = Router();
 
 router.post("/register", createUser); // basically registering  the  user
