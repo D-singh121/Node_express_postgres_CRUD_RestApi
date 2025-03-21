@@ -1,0 +1,14 @@
+node_modules
+dist
+build
+coverage
+*.log
+*.log.*
+*.log-*
+*.log/*
+*.log-*/
+
+*env
+env*
+.env
+.env.*
