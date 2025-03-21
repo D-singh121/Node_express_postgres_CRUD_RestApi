@@ -76,6 +76,16 @@ const loginUser = asyncHandler(async (req, res, next) => {
       return handleResponse(res, 400, "Email, and Password are required.");
     }
 
+    // We'll Check if user is already logged in to usko logout karwayenge than wo kisi bhi account se login kar sakta hai.
+    const existingToken = req.cookies?.token;
+    if (existingToken) {
+      return handleResponse(
+        res,
+        403,
+        "You are already logged in. Please logout first."
+      );
+    }
+
     //Check if user is registered or not
     const user = await getUserByEmailService(email);
     if (!user) {
