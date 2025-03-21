@@ -5,6 +5,7 @@ import pool from "./src/config/dbConnection.js";
 import userRoutes from "./src/routes/userRoutes.js";
 import errorHandler from "./src/middlewares/errorHandler.js";
 
+import createUserTable from "./src/data/createUserTable.js";
 
 // Load environment variables from .env file
 dotenv.config();
@@ -17,13 +18,13 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(cors());
 app.use(express.static("public"));
-app.use(errorHandler);  // error handler
+app.use(errorHandler); // error handler
 
 //routes
 app.use("/api/v1", userRoutes);
 
-
-
+// creating the user table if not exists in the database
+createUserTable();
 
 // test the connection
 app.get("/", async (req, res) => {
